@@ -302,13 +302,7 @@
 										</div>
 										<br>
 										<div class="row">
-											<div ng-if="message.severity === 'ERROR'" class="alert alert-danger">
-												<span ng-if="validationIssues == null || validationIssues.length <= 0"><i class="fa fa-fw fa-exclamation-triangle"></i> {{message.message}}</span>
-												<p ng-if="validationIssues != null && validationIssues.length > 0" ng-repeat="issue in validationIssues">
-													<i class="fa fa-fw fa-exclamation-triangle"></i>Line {{ issue.lineNumber }} - {{ issue.msg}}
-												</p>
-											</div>
-											<div ng-if="message.severity === 'WARNING'" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> {{message.message}}</div>
+											<div ng-if="error" class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{error}}</div>
 											<div ng-if="success" class="alert alert-success"><i class="fa fa-fw fa-check"></i> {{success}}</div>
 										</div>
 										<div class="row">
@@ -423,7 +417,7 @@
 					<div class="row" ng-repeat="row in platformGeneratorMatrix">
 						<!--genbox -->
 						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
-							<a ng-show="!canGenerate" uib-tooltip-template="'cannotGenerateWarningTooltip'" tooltip-append-to-body="true">
+							<a ng-show="!canAccessCompleteModel" uib-tooltip-template="'cannotGenerateWarningTooltip'" tooltip-append-to-body="true">
 								<div class="tiny-box" id="tinyBox:{{generator.key}}">
 									<span class="tiny-box-icon">
 										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
@@ -433,7 +427,7 @@
 									</div>
 								</div>
 							</a>
-							<a ng-show="canGenerate" ng-click="openGeneratorConfig(generator)">
+							<a ng-show="canAccessCompleteModel" ng-click="openGeneratorConfig(generator)">
 								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
 									<span class="tiny-box-icon">
 										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />

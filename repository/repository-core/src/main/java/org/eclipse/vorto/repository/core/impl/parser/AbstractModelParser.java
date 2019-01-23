@@ -105,13 +105,21 @@ public abstract class AbstractModelParser implements IModelParser {
               getModelInfo(model).orElse(getModelInfoFromFilename()));
         }
       }
-
+      
       if (!resource.getErrors().isEmpty()) {
-        throw new ValidationException(resource.getErrors().get(0).getMessage(),
-            getModelInfo(model).orElse(getModelInfoFromFilename()));
-      }
+          throw new ValidationException(resource.getErrors().get(0).getMessage(),
+              getModelInfo(model).orElse(getModelInfoFromFilename()));
+        }
+    } else {
+    	 IResourceValidator validator = injector.getInstance(IResourceValidator.class);
+         List<Issue> issues = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
+         issues = issues.stream().filter(issue -> issue.getCode() != null && !issue.getCode().equals("org.eclipse.xtext.diagnostics.Diagnostic.Linking")).collect(Collectors.toList());
+         if (!issues.isEmpty()) {
+           Set<ValidationIssue> validationIssues = convertIssues(issues);
+           throw new ValidationException(collate(validationIssues), validationIssues,
+             getModelInfo(model).orElse(getModelInfoFromFilename()));   
+         }
     }
-    
 
     return new ModelResource((Model) resource.getContents().get(0));
   }

@@ -97,7 +97,6 @@ public class ImportController {
 			}
 
 		} catch (IOException e) {
-			LOGGER.error("Error upload model." + e.getStackTrace());
 			UploadModelResponse errorResponse = new UploadModelResponse(
 					"Error during upload. Try again. " + e.getMessage(),
 					new UploadModelResult(null, Collections.emptyList()));

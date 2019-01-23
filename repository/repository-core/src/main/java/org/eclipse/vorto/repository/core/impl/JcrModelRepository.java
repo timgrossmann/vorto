@@ -76,6 +76,7 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
@@ -237,11 +238,21 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       IUserContext userContext) {
     Objects.requireNonNull(content);
     Objects.requireNonNull(modelId);
-
-    ModelResource modelInfo = (ModelResource) modelParserFactory
-        .getParser("model" + ModelType.fromFileName(fileName).getExtension())
-        .parse(new ByteArrayInputStream(content));
-
+    
+    if (!exists(modelId)) {
+    	throw new ModelNotFoundException("Model was not found");
+    }
+    
+    IModelParser parser =  modelParserFactory
+            .getParser("model" + ModelType.fromFileName(fileName).getExtension());
+    parser.setValidate(false);
+    
+    ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
+    
+    if (!modelId.equals(modelInfo.getId())) {
+    	throw new IllegalArgumentException("You may not change the model ID (name, namespace, version). For this please create a new model.");
+    }
+    
     logger.info("Saving " + modelId.toString() + " as " + fileName + " in Repository");
 
     org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) getSession();

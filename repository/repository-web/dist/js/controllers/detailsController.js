@@ -1,8 +1,8 @@
 repositoryControllers.controller('DetailsController', 
     ['$rootScope', '$scope', '$http', '$routeParams', '$location', '$route', 
-     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog',
+     '$uibModal', '$timeout', '$window', '$timeout', 'openCreateModelDialog', '$q',
     function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, 
-        $timeout, $window, $timeout, openCreateModelDialog) {
+        $timeout, $window, $timeout, openCreateModelDialog, $q) {
 
 		$scope.model = [];
 		$scope.aclEntries = [];
@@ -23,7 +23,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.permission = "READ";
 		$scope.encodeURIComponent = encodeURIComponent;
 		$scope.newComment = {value: ""}
-		$scope.canGenerate = true;
+		$scope.canAccessCompleteModel = true;
 
 		$scope.modelEditorLoaded = function (_editor) {
 			$scope.modelEditor = _editor;
@@ -60,17 +60,14 @@ repositoryControllers.controller('DetailsController',
 				.success(function (result) {
 					$scope.isLoading = false;
 					$scope.message = result.message;
-					if (result.valid) {
-						$scope.success = "Changes saved successfully. Reloading page ...";
-						$timeout(function () {
-							$window.location.reload();
-						}, 1000);
-					} else {
-						$scope.validationIssues = result.validationIssues; 
-					}
+					$scope.success = "Changes saved successfully. Reloading page ...";
+					$timeout(function () {
+						$window.location.reload();
+					}, 1000);
 				}).error(function (data, status, headers, config) {
 					$scope.isLoading = false;
-					$scope.error = data;
+					console.log(data);
+					$scope.error = data.message;
 				});
 		};
 
@@ -144,11 +141,13 @@ repositoryControllers.controller('DetailsController',
 		};
 		
 		$scope.getReferences = function () {
+			var defered = $q.defer();
+			 
 			references = $scope.model.references;
 			$scope.modelReferences = [];
 			$scope.modelReferences.show = false;
 			var tmpIdx = 0;
-			for( var index in references){
+			for( var index in references) {
 		        $http.get('./api/v1/models/' + references[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferences[tmpIdx] = {
@@ -165,11 +164,13 @@ repositoryControllers.controller('DetailsController',
 						"state" : null,
 						"hasAccess" : false
 					};
-					$scope.canGenerate = false;
+					$scope.canAccessCompleteModel = false;
 					$scope.modelReferences.show = true;
 					tmpIdx++;
 				});
 			}
+			defered.resolve();
+			return defered.promise;
 		};
 		
 		$scope.getReferencedBy = function () {
@@ -209,7 +210,15 @@ repositoryControllers.controller('DetailsController',
 						$scope.model.author = 'other user';
 					}
 					$scope.getMappings();
-					$scope.getReferences();
+					
+					var promise = $scope.getReferences();
+					
+					promise.then(function(response) {
+						if ($scope.canAccessCompleteModel) {
+							$scope.diagnoseModel();
+						}
+					});
+					
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
@@ -217,6 +226,7 @@ repositoryControllers.controller('DetailsController',
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
+					
 					$scope.modelIsLoading = false;
 
 				}).error(function (error, status) {					
@@ -768,10 +778,6 @@ repositoryControllers.controller('DetailsController',
 					$scope.diagnostics = result;
 				});
 		};
-		
-		if ($rootScope.hasAuthority("ROLE_ADMIN")) { 
-			$scope.diagnoseModel();
-		}
 		
 		$scope.getPolicies = function() {
 			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies')
