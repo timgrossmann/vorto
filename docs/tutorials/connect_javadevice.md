@@ -1,59 +1,46 @@
 # Integrating a Java - based Device with the Bosch IoT Suite using Vorto
 
-This tutorial explains how Vorto is used to create a simple Java application that sends device telemetry data to the Bosch IoT Suite. 
+This tutorial explains how Vorto is used to create a simple Java application that sends device telemetry data to the Bosch IoT Suite.
+
+This tutorial explains how to integrate a device with the Bosch IoT Suite using Java and Maven. Your device should already be created as a thing from an Information Model at this point.   
+We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
+
+<img src="../images/tutorials/connect_grovepi/cover.png"/>
 
 ## Prerequisites
 
-* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
+* A [Java Runtime](https://www.java.com/en/download/) and [Maven](https://maven.apache.org/index.html) are installed
 
-* Subscription to [Asset Communication for Bosch IoT Suite](https://www.bosch-iot-suite.com/asset-communication/) (Free plan, no credit card required)
+* Some code editor is installed (e.g. [Eclipse IDE](https://www.eclipse.org/ide/))
 
-## Tools
+* Created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
-* Development IDE, such as Eclipse
+<br />
 
-* Maven
+## Steps
+1. Setup your device
+1. Download the generated integration script
+1. Configure the scripts with the information of your created thing
+1. Reading the sensor data
+1. Start sending data
 
-## Proceed as follows
+<br />
 
-In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT Suite. This sensor is already described as a [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
+## Download the generated integration script
 
-1. Create a distance sensor thing instance for the Vorto Information Model in the Bosch IoT Suite device registry:
+**1.** On the Vorto Repository page of your Information Model (we will use this [Distance Sensor](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0)), click on the `Bosch IoT Suite` generator. This will trigger a pop up to appear with the available generators.     
+<img src="../images/tutorials/create_thing/code_generators.png" />
 
-	- Login to the [Vorto Console](https://vorto.eclipse.org/console).
+**2.** We want to integrate a device using Java. Click the `Source Code` button to download the generated Java project.
 
-	- Click **Create thing**.
-	
-	- In the **Vorto Models** table, select a Vorto Model to specify the type of thing you want to create.
-	
-		For the example, select the **DistanceSensor** Vorto Information Model.
-	
-		> Note: You can use the filter above the Vorto Models table. Just begin to write. The filter is effective immediately.
-	
-	- Click **Next**.
-	
-	- Specify the **Namespace**. 
-		> !! The namespace must match with the namespace that you have set in Bosch IoT Things for your solution.
-	
-	- Leave the default value for **Name**.
-	
-	- Set the **Technical Device ID** of the thing.
+<img src="../images/tutorials/connect_grovepi/python-generator.png" height="500"/>
 
-		> This can be a MAC address, a serial number or anything that uniquely identifies the device. For the example, use `47-11-00`.
+**3.** Unzip the downloaded file and open it in your Eclipse IDE. 
 
-	- Click **Next**.
-	
-	- Specify the value for the **Password**. For the example, use `s3cr3t`
-	
-	- Click **Next**.
+**4.** In order to guarantee secure transmission of your data, the integration uses SSL. We therefore need a certificate.   
+Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub.crt) file and place it at `<project>/src/main/resources/certificates/hono.crt` as `hono.crt`.	
 
-	- Review the changes that are going to be made to the Suite.
-	
-	- Click **Create**.
-	
-		A new thing is created based on the Vorto Information Model in the Bosch IoT Suite.
-
-	- In the summary page, click **View thing details** to have a look at the digital twin representation of your device.
+<br />
 		
 3. Generate and Download a Java Source Code Template for the device.
 	
@@ -71,6 +58,10 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 4. Import the source code bundle as a Maven project into your IDE.
 
+<br />
+
+## Configure the scripts with the information of your created thing
+
 5. Configure the endpoint in the generated source code.
 
 	- Open the class **DistanceSensorApp**.
@@ -81,9 +72,9 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 	
 	- Set the **DITTO_TOPIC** to **Things Namespace/Technical Device ID**. (e.g org.mycompany/4711)
 
-	- Click **Save** to save the changes.
+<br />
 
-	- Download the [Hub Server Certificate](http://docs.bosch-iot-hub.com/cert/iothub.crt) and save the file under `<project>/src/main/resources/certificates/hono.crt`.
+## Start sending data
 
 6. Run and verify incoming sensor data.
 
@@ -104,6 +95,8 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 **Great!** You just sent device payload complying to the Bosch IoT Suite using Vorto. Feel free to create another Vorto Information Model for your device.
  
+<br />
+
 ## What's next ?
 
- - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
+ - [Use the Vorto Dashboard](create_webapp_dashboard.md) to visualize the device data in UI widgets.
