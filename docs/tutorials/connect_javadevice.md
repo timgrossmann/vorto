@@ -41,36 +41,18 @@ We will use this [Distance Sensor VIM](https://vorto.eclipse.org/#/details/org.e
 Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub.crt) file and place it at `<project>/src/main/resources/certificates/hono.crt` as `hono.crt`.	
 
 <br />
-		
-3. Generate and Download a Java Source Code Template for the device.
-	
-	- Go back to the [Vorto Console](https://vorto.eclipse.org/console).
-
-	- Navigate to your thing in the Thing Browser and click on it.
-
-	- Click on the **Source Code Templates** tab.
-
-	- At the **Integrate device with Java** template, click **Download**.
-
-		<img width="300" src="../images/tutorials/connect_java/code_template.png" style="border:3px !important;">
-
-	- Store the ZIP file and extract the source code.
-
-4. Import the source code bundle as a Maven project into your IDE.
-
-<br />
 
 ## Configure the scripts with the information of your created thing
 
-5. Configure the endpoint in the generated source code.
+**5.** To configure the endpoint in the generated source code
 
-	- Open the class **DistanceSensorApp**.
+- Open the class **DistanceSensorApp**.
 
-	- Set the **Password**, you have specified during the thing creation process (refer to above).
-	
-	- Set the **AUTH_ID** to the format like **Technical Device ID@HONO_TENANT**, e.g. 471100@t932f4726de33232223121_hub
-	
-	- Set the **DITTO_TOPIC** to **Things Namespace/Technical Device ID**. (e.g org.mycompany/4711)
+- Set the **Password**, you have specified during the thing creation process (refer to above).
+
+- Set the **AUTH_ID** to the format like **Technical Device ID@HONO_TENANT**, e.g. 471100@t932f4726de33232223121_hub
+
+- Set the **DITTO_TOPIC** to **Things Namespace/Technical Device ID**. (e.g org.mycompany/4711)
 
 <br />
 
@@ -78,22 +60,25 @@ Right click and save the [iothub.crt](https://docs.bosch-iot-hub.com/cert/iothub
 
 6. Run and verify incoming sensor data.
 
-	- Right-Click on the **DistanceSensorApp.java**. Choose **Run As** and select **Java Application**. 
-	
-	> The running application prints out the logs to the IDE console.
+- Right-Click on the **DistanceSensorApp.java**. Choose **Run As** and select **Java Application**. 
 
-	- Go back to the [Vorto Console](https://vorto.eclipse.org/console).
+> The running application prints out the logs to the IDE console.
 
-	- Navigate to your thing in the Thing Browser and click on it.
+- Go back to the [Vorto Console](https://vorto.eclipse.org/console).
 
-	- Click on Refresh to fetch the latest digital twin data
+- Navigate to your thing in the Thing Browser and click on it.
 
-	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
+- Click on Refresh to fetch the latest digital twin data
 
-		<img width="500" src="../images/tutorials/connect_java/verifydata.png" style="border:3px !important;">
+- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
+<img width="500" src="../images/tutorials/connect_java/verifydata.png" style="border:3px !important;">
 
-**Great!** You just sent device payload complying to the Bosch IoT Suite using Vorto. Feel free to create another Vorto Information Model for your device.
+**11**. We can now verify that there is data incoming by either using
+- the [Vorto Dashboard](create_webapp_dashboard.md) that simply displays your data in different UI widgets.
+- or the [SwaggerUI](https://apidocs.bosch-iot-suite.com/?urls.primaryName=Bosch%20IoT%20Things%20-%20API%20v2) which doesn't require anything to be installed and allows a quick insight into whether your data is updating.
+
+Once you can see your data updating, you have successfully connected your Distance Sensor to the Bosch IoT Suite using Java!   
  
 <br />
 
