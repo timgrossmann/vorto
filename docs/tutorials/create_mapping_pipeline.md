@@ -157,7 +157,7 @@ This normalized payload can now again be mapped into Vendor specific formats, li
   "topic": "com.timgrossmann/pmsm0815/things/twin/commands/modify",
   "value": {
     "status": {
-      "timestamp": 1564389756
+      "timestamp": 1563866900
     }
   }
 }
