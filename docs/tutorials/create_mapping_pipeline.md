@@ -106,7 +106,23 @@ Once we finished specifying how our mapping should be done, we can download it a
 <br />
 
 ## Receive data from Hub with the Data Normalizer
-After running the mapping engine and sending data from our device, the resulting output in the console of our mapping looks like this.
+In order to run our Data Normalizer and map the payload from IoT Hub, we have to first configer the normalizer to connect and consume data from Hub.   
+The two configuration files of interest are located in the resources folder of our `hono-payloadmapping` project.
+
+In the `application.yml` file, we have to provide the tenantId of our subscription.
+```yaml
+hono:
+  tenantId: {your_tenant_id}
+```
+
+In the `qpid.properties` file, we have to adjust the value of `connectionfactory.hono`.
+```yaml
+connectionfactory.hono = amqps://messaging.bosch-iot-hub.com?jms.username={your_user}&jms.password={your_password}&amqp.saslMechanisms=PLAIN&transport.verifyHost=false&transport.trustAll=true
+```
+
+Once the configuration is done, we can start the Data Normalizer and receive data sent to Hub with it.
+If you've set up everything correctly, we are now able to send data from our device to Hub and then see the mapping engine apply the mapping specification.   
+The resulting output in the console of our mapping looks like this.
 
 ```json
 {
@@ -139,6 +155,8 @@ This normalized payload can now again be mapped into Vendor specific formats, li
 <br />
 
 ## Connect Things to your AMQ Instance
+
+... TODO how to update the policy of our things with the `integration:...:thing` 
 
 <br />
 
