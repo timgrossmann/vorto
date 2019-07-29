@@ -148,6 +148,21 @@ The resulting output in the console of our mapping looks like this.
 The resulting Normalized Vorto Payload maps the given values from our CSV to the according Function Blocks in a simple JSON format.   
 This normalized payload can now again be mapped into Vendor specific formats, like in our case the Eclipse Ditto format used with Bosch IoT Things.
 
+```json
+{
+  "headers": {
+    "response-required": false
+  },
+  "path": "/features/timestamp/properties",
+  "topic": "com.timgrossmann/pmsm0815/things/twin/commands/modify",
+  "value": {
+    "status": {
+      "timestamp": 1564389756
+    }
+  }
+}
+```
+
 <br />
 
 ## Set up AWS AMQ to provide your device data
