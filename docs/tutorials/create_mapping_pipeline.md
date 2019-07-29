@@ -32,11 +32,32 @@ Throughout this tutorial, we will set up a pipeline of mapping device payload th
 <br />
 
 ## Register your device and create a new Thing from the Information Model.
-Test
+... TODO
 
-Combines registring a new device with Hub, creating a policy, and creating a new, empty, Thing with credentials.
+Since the telemetry data content type of devices is not standardized, we need to make sure that we have it defined inside the device registry in order to let the mapping engine know which format our payload is in.
+Using Eclipse Hono, we can add this information, together with the definition of our Vorto Information Model, to the `defaults` attribute of our device registration. In our case, we'll use the Bosch IoT Hub device registry.
 
+Our device is sending its state in the form of comma separated values, this means we need to register our device with the content-type of text/csv.
 
+```csv
+63,1563866900,0.6614805,2.175339,-1.2224298,-0.25563973,1.6673933,1.1077263,0.59097534
+```
+
+The `vorto` attribute will tell our Mapping Engine which Mapping Specification to choose.
+Therefore our device registration settings will look like this.
+
+```json
+{
+  "enabled": true,
+  "defaults": {
+    "content-type": "text/csv",
+    "vorto": "vorto.private.timgrossmann:PMSMMotor:2.0.0"
+  },
+  "device-id": "pmsm0815"
+}
+```
+
+Once we have registered our device with Hub, we can send data from our device to Hub.
 
 <br />
 
@@ -45,11 +66,48 @@ Test
 
 <br />
 
-## Receive data from Hub with the Data Normalizer
+## Create a Mapping Specification for your device.
+The Mapping Editor in the Vorto Repository provides a convenient way to create and test mappings. Every Function Block gets its own mapping, this means full control over what and how should be mapped.
+When taking a look at the possibilities in the mapping editor, we can see 2 predominant elements, `Condition` and `Status Properties`.
+
+![mapping editor](https://cdn-images-1.medium.com/max/800/1*cr5vwdToFhVlYu3K8sLKeg.png)
+
+As mentioned in the example overview, we are using CSV data here that will be deserialized into an array of Strings.
+Using this knowledge, we can get the according elements of the array by indexing them, with the indices starting at 1 instead of 0, and then converting them to the data types we are expecting.
+
+Array is a keyword here that will reference the input String array element that comes out of simply splitting the CSV at comma.
+We can make sure that we only map specific elements by providing a condition like the one we used above to avoid mapping non provided values.
+
+Once we finished specifying how our mapping should be done, we can download it and copy it into our `specs` folder in the Mapping Engine.
 
 <br />
 
-## Create a Mapping Specification for your device.
+## Receive data from Hub with the Data Normalizer
+After running the mapping engine and sending data from our device, the resulting output in the console of our mapping looks like this.
+
+```json
+{
+  "profile_id": {
+    "status": {
+      "id": 63
+    }
+  },
+  "ambient": {
+    "status": {
+      "unit": "C",
+      "value": 0.6614805
+    }
+  },
+  "timestamp": {
+    "status": {
+      "timestamp": 1563866900
+    }
+  }
+}
+```
+
+The resulting Normalized Vorto Payload maps the given values from our CSV to the according Function Blocks in a simple JSON format.   
+This normalized payload can now again be mapped into Vendor specific formats, like in our case the Eclipse Ditto format used with Bosch IoT Things.
 
 <br />
 
