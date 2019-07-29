@@ -130,8 +130,12 @@ This normalized payload can now again be mapped into Vendor specific formats, li
 <br />
 
 ## Visualize your device data with the [Vorto Dashboard](https://github.com/eclipse/vorto-examples/tree/master/vorto-dashboard)
+The last remaining step is to visualize our device data in the Vorto Dashboard.   
+In order to do this, please follow our sophisticated tutorial on [how to install and start the Vorto Dashboard](create_webapp_dashboard.md).
 
 ---
+
+<br />
 
 In case you're having difficulties or facing any issues, feel free to [create a new question on StackOverflow](https://stackoverflow.com/questions/ask) and we'll answer it as soon as possible!   
 Please make sure to use `eclipse-vorto` as one of the tags. 
