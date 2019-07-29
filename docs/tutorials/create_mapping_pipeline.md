@@ -38,10 +38,8 @@ We will connect Bosch IoT Things with AMQ to consume the data and update our Dig
 <br />
 
 ## Register your device and create a new Thing from the Information Model.
-... TODO
-
-Since the telemetry data content type of devices is not standardized, we need to make sure that we have it defined inside the device registry in order to let the mapping engine know which format our payload is in.
-Using Eclipse Hono, we can add this information, together with the definition of our Vorto Information Model, to the `defaults` attribute of our device registration. In our case, we'll use the Bosch IoT Hub device registry.
+In order to register a new device and thing, we need work with the device provisioning API.   
+The default steps to take to create a new thing are [documented in our device provisioning tutorial](create_thing.md).
 
 Our device is sending its state in the form of comma separated values, this means we need to register our device with the content-type of text/csv.
 
@@ -49,18 +47,33 @@ Our device is sending its state in the form of comma separated values, this mean
 63,1563866900,0.6614805,2.175339,-1.2224298,-0.25563973,1.6673933,1.1077263,0.59097534
 ```
 
-The `vorto` attribute will tell our Mapping Engine which Mapping Specification to choose.
-Therefore our device registration settings will look like this.
+The only steps we have to add in order to configure our registered device for payload mapping is to add additional information.   
+We can do this by modifying the body of our request by adding a `defaults` attribute in the `Body` section of the generated Postman script.    
+Please add the `defaults` attribute with a field `vorto` that contains the namespace and modelId of your Vorto Information model and a field of `content-type` that describes the format of the, from your device, sent payload.
+
 
 ```json
 {
-  "enabled": true,
-  "defaults": {
-    "content-type": "text/csv",
-    "vorto": "vorto.private.timgrossmann:PMSMMotor:2.0.0"
-  },
-  "device-id": "pmsm0815"
-}
+  "id": "{{device-id}}",
+  "hub": {
+    "device": {
+      "enabled": true,
+    },
+    "credentials": {
+```
+
+```json
+{
+  "id": "{{device-id}}",
+  "hub": {
+    "device": {
+      "enabled": true,
+      "defaults": {
+      	"vorto": "org.eclipse.vorto.tutorials:pmsm0815",
+      	"content-type": "text/csv"
+      }
+    },
+    "credentials": {
 ```
 
 Once we have registered our device with Hub, we can send data from our device to Hub.
