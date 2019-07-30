@@ -93,11 +93,13 @@ However feel free to read through and use one of the tutorials for:
 The Mapping Editor in the Vorto Repository provides a convenient way to create and test mappings. Every Function Block gets its own mapping, this means full control over what and how should be mapped.
 When taking a look at the possibilities in the mapping editor, we can see 2 predominant elements, `Condition` and `Status Properties`.
 
+- `Condition` describes when a specific value from the payload should be mapped
+- `Status Properties` is the value that will be assigned to the displayed property if the condition evaluates to be true
+
 ![mapping editor](https://cdn-images-1.medium.com/max/800/1*cr5vwdToFhVlYu3K8sLKeg.png)
 
-As mentioned in the example overview, we are using CSV data here that will be deserialized into an array of Strings.
-Using this knowledge, we can get the according elements of the array by indexing them, with the indices starting at 1 instead of 0, and then converting them to the data types we are expecting.
-
+CSV data will be deserialized into an array of Strings, this means that we can get the according elements of the array by indexing them, with the indices starting at 1 instead of 0, and then converting them to the data types we are expecting.
+We can also make sure that we only map specific elements by providing a condition like the one we used above to avoid mapping empty values.   
 Array is a keyword here that will reference the input String array element that comes out of simply splitting the CSV at comma.
 We can make sure that we only map specific elements by providing a condition like the one we used above to avoid mapping non provided values.
 
